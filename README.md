@@ -3,7 +3,7 @@
 ## Chest X-ray Disease Diagnosis
 ----------------------------------
 
-<img src='https://www.ebmconsult.com/content/images/Xrays/ChestXrayAPNmlLabeled.png'>
+<img src='https://www.ebmconsult.com/content/images/Xrays/ChestXrayAPNmlLabeled.png'  >
 
 * Mentor1: Rishabh Bhardwaj hrbhardwaj39@gatech.edui
 * Mentor2: Su Young Park hspark638@gatech.edui
@@ -38,18 +38,22 @@ to get bonus points according to your performance.
 
 # Responsibilites
 ### Dane
+<img src="https://media.licdn.com/dms/image/C4E03AQGavECXV6qb_Q/profile-displayphoto-shrink_200_200/0?e=1575504000&v=beta&t=_fXnnO_2zLz6ZML28JLDhDom5-Zm0Lt9zGDvP22OoRI">
+
 * Generate initial statistics over the raw data to make sure the data quality is good enough and the key assumption about the data are met
 * Identify the high-level technical approaches for the project (e.g., what algorithms to use or pipelines to use).
 
 ------------------
 
 ### Josh
+<img src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201506/anonymous-647[1]_061815055932.jpg" height=200 width=200>
 
 * Conduct literature search to understand the state of arts and the gap for solving the problem.
 * Prepare a timeline and milestones of deliverables for the entire project. **SCRUM MASTER**
 ------------
 
 ### Scott
+<img src="https://media.licdn.com/dms/image/C5103AQF9GDUxajWA0Q/profile-displayphoto-shrink_200_200/0?e=1575504000&v=beta&t=sCbKxUCYP7WlZ0GT_2m9BjcRqVT-gPvoCnR9j3sdYeY">
 
 * Identify and motivate the problems that you want to address in your project.
 * Formulate the data science problem in details (e.g., classification vs. predictive modeling vs. clustering problem). 
