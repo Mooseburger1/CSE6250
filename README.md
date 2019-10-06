@@ -46,7 +46,7 @@ to get bonus points according to your performance.
 ------------------
 
 ### Josh
-<img src="https://akm-img-a-in.tosshub.com/indiatoday/images/story/201506/anonymous-647[1]_061815055932.jpg" height=200 width=200>
+<img src="https://avatars0.githubusercontent.com/u/241967?s=460&v=4" height=200 width=200>
 
 * Conduct literature search to understand the state of arts and the gap for solving the problem.
 * Prepare a timeline and milestones of deliverables for the entire project. **SCRUM MASTER**
