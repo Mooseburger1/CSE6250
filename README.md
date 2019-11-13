@@ -1,5 +1,45 @@
 # CSE6250
 
+## AutoEncoder Usage:
+```
+python autoencoder.py 
+[-i, --input_directory] - Directory location of training images (Default = '.')
+[-o, --output_directory] - Directory to save model checkpoints (Default = './training_checkpoints')
+[-e, --epochs] - Number of training epochs (Default = 100)
+[-t, --tensorboard] - Output directory of Tensorboard Logs (Default = './logs/gradient_tape/')
+[-b, --batch] - Batch Size for training data (Default = 64)
+[-cl, --clean_logs] - Delete old logs in tensorboard log directory {true, false} (Default = false)
+[-cc, --clean_checkpoints] - Delete old model checkpoints in checkpoint directory {true, false} (Default = false)
+[-f, --force] - Force clean both logs and checkpoints with no warning prompts {true, false} (Default = false)
+```
+
+### Data Structure
+Tensorflow reads directories for data ingestion and infers class labels from the name of the directories themselves. To properly setup your directory for data pipelining, you must follow the given structure:
+```
+train_data
+|--Cardiomegaly
+|      |--img1.jpg
+|      |--img2.jpg
+|      |--img3.jpg
+|--Enlarged_Cardiomediastinum
+|      |--img1.jpg
+|      |--img2.jpg
+|      |--img3.jpg
+|--Lung_Lesion
+|      |--img1.jpg
+|      |--img2.jpg
+|      |--img3.jpg
+
+
+.........
+
+
+```    
+The script **pipeline.py** supplies the function used in **autoencoder.py** to prepare the training dataset. It utilizes Tensorflow's Dataset API and batching. It currently doesn't use the most optimal pipeline of TFRecords. When calling the autoencoder script, the CLI parameters for the given example would be
+```
+python autoencoder.py -i train_data
+```
+
 ## Chest X-ray Disease Diagnosis
 ----------------------------------
 
