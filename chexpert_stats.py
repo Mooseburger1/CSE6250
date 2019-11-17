@@ -9,6 +9,11 @@ def auto_encoder_filter(df, col, others):
         new_df = new_df[new_df[lab]!=-1]
     return new_df
 
+def count_total_diagnoses(df, col, others, val):
+    
+    new_df = df[df[col] == val]
+    return new_df
+
 train_df = pd.read_csv("train.csv")
 test_df = pd.read_csv("valid.csv")
 
@@ -33,9 +38,23 @@ for label in buns:
     label_copy.remove(label)
     #print(label, "::", label_copy)
     new_df = auto_encoder_filter(train_df, label, label_copy)
-    print(label, " size: ", new_df.count()[0], "percentage: ", "{:.2%}".format(new_df.count()[0]/train_size))
-    
+    print(label, "only size: ", new_df.count()[0], "percentage: ", "{:.2%}".format(new_df.count()[0]/train_size))
     new_df.to_csv("autoencoders/"+label.replace(" ", "_")+".csv")
+print("----------------------------------------------------------------------------")
+for label in buns:
+    label_copy = label_columns[:]
+    label_copy.remove(label)
+    #print(label, "::", label_copy)
+    new_df = count_total_diagnoses(train_df, label, label_copy, 1)
+    print(label, "total ones size: ", new_df.count()[0], "percentage: ", "{:.2%}".format(new_df.count()[0]/train_size))
+
+print("----------------------------------------------------------------------------")
+for label in buns:
+    label_copy = label_columns[:]
+    label_copy.remove(label)
+    #print(label, "::", label_copy)
+    neg_df = count_total_diagnoses(train_df, label, label_copy, -1)
+    print(label, "total -1 size: ", neg_df.count()[0], "percentage: ", "{:.2%}".format(neg_df.count()[0]/train_size))
 
 
 
