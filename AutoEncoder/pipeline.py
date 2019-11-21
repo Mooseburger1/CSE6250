@@ -61,3 +61,38 @@ def prepare_for_training(ds, BATCH_SIZE, cache=True, shuffle_buffer_size=1000):
     ds = ds.prefetch(buffer_size=AUTOTUNE)
 
     return ds
+
+
+
+
+def resize_(img, lab):
+    img = tf.image.resize(img, [299,299])
+    return img, lab
+
+def parse_fn(example):
+  "Parse TFExample records and perform simple data augmentation."
+  example_fmt = {
+    'image': tf.io.FixedLenFeature((), tf.string, ""),
+    'label': tf.io.FixedLenFeature((), tf.string, ""),
+    'classname': tf.io.FixedLenFeature((), tf.string, "")
+  }
+  parsed = tf.io.parse_single_example(example, example_fmt)
+  image = tf.io.decode_jpeg(parsed["image"])
+  image = tf.image.convert_image_dtype(image, tf.float32)
+  image = tf.image.resize(image, [299,299])
+
+  idx = int(parsed['label'])
+  depth = 13
+  label = tf.one_hot(idx, depth)
+  return image, label, parsed["classname"]
+
+def make_dataset():
+  files = tf.data.Dataset.list_files("/home/scott/CSE6250/tfrecords/*.tfrecord")
+  dataset = files.interleave(
+    tf.data.TFRecordDataset, cycle_length=1,
+    num_parallel_calls=tf.data.experimental.AUTOTUNE)
+  dataset = dataset.shuffle(buffer_size=500)
+  dataset = dataset.map(map_func=parse_fn)
+  dataset = dataset.batch(batch_size=10)
+  dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+  return dataset
