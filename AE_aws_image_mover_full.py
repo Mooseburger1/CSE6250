@@ -1,5 +1,9 @@
 # How to run script
-#python3 AE_aws_image_mover_full.py valid-full-test.csv
+# python AE_image_mover.py file.csv bucket
+# file.csv is the file to transfer images from
+# bucket is the name of s3 bucket
+# in this case all the files are in autoencoders folder so I have
+# that hard coded below
 import pandas as pd
 import numpy as np
 import os
@@ -36,9 +40,15 @@ def read_csv(filepath):
 
 def copy_images_to_s3(classification, images_with_classification):
     paths = images_with_classification['Path']
+    formatted_classification = classification.replace(" ", "_").lower()
     for image_with_classification in paths:
+        new_image_path = image_with_classification.replace("valid/", "").replace("train/", "").replace("/", "_")
+        if "valid" in image_with_classification:
+            image_type = "valid"
+        else:
+            image_type = "train"
         current_key = 'cse6250/' + image_with_classification
-        destination_key = 'cse6250/processed/' + classification + '/' + image_with_classification
+        destination_key = 'cse6250/processed/' + formatted_classification + '/' + image_type + "/" + new_image_path
         copy_image_to_s3(current_key, destination_key)
     return True
 
