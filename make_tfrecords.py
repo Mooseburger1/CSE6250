@@ -10,20 +10,20 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import argparse
 
-data_dict = {'Lung_Lesion': 0,
- 'Atelectasis': 1,
- 'No_Finding': 2,
- 'Edema': 3,
- 'Lung_Opacity': 4,
- 'Cardiomegaly': 5,
- 'Pleural_Other': 6,
- 'Fracture': 7,
- 'Pneumonia': 8,
- 'Enlarged_Cardiomediastinum': 9,
- 'Pleural_Effusion': 10,
- 'Pneumothorax': 11,
- 'Support_Devices': 12,
- 'Consolidation': 13}
+data_dict = {'lung_lesion': 0,
+ 'atelectasis': 1,
+ 'no_finding': 2,
+ 'edema': 3,
+ 'lung_opacity': 4,
+ 'cardiomegaly': 5,
+ 'pleural_other': 6,
+ 'fracture': 7,
+ 'pneumonia': 8,
+ 'enlarged_cardiomediastinum': 9,
+ 'pleural_effusion': 10,
+ 'pneumothorax': 11,
+ 'support_devices': 12,
+ 'consolidation': 13}
 
 
 def _load_image(path):
@@ -45,7 +45,7 @@ def _build_examples_list(input_folder, seed):
             for filename in os.listdir(class_dir):
                 filepath = os.path.join(class_dir, filename)
                 example = {
-                    'classname': classname, 
+                    'classname': classname,
                     'path': filepath,
                     'label': data_dict[classname]
                 }
