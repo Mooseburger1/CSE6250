@@ -9,6 +9,7 @@ from numpy import random
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import argparse
+import cv2
 
 data_dict = {'Lung_Lesion': 0,
  'Atelectasis': 1,
@@ -26,11 +27,17 @@ data_dict = {'Lung_Lesion': 0,
  'Consolidation': 13}
 
 
+def equalize(img):
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+    cl = clahe.apply(img)
+    return cl
+
 def _load_image(path):
-    image = cv2.imread(path)
+    image = cv2.imread(path,0)
     if image is not None:
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        return image.astype(np.float32)
+        image = equalize(image)
+        image = cv2.resize(image, (299,299))
+        return image
     return None
 
 def _bytes_feature(value):
@@ -106,7 +113,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-i', '--input_directory', dest='input_', help="Directory of training images")
     parser.add_argument('-o', '--output_directory', dest='output', help='Directory to save TFRecords')
-    parser.add_argument('-s', '--shards', dest='shards', help="Number of TFRecord shards to output", default=20)
+    parser.add_argument('-s', '--shards', dest='shards', help="Number of TFRecord shards to output", default=2)
+ 
 
     args = parser.parse_args()
 
