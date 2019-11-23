@@ -30,9 +30,12 @@ def classification_list():
     'Support Devices']
 
 def configure_s3_client():
-    aws_access_key_id = "AKIAWVFQFSQH7O5PHHMJ"
-    aws_secret_key_id = "tJ4DEIYjJ3a86gdzMBcVc+Qn2DgSoRflx7WKH+Z6"
-    return boto3.resource('s3')
+    client = boto3.client(
+            's3',
+            aws_access_key_id="AKIAWVFQFSQH7O5PHHMJ",
+            aws_secret_access_key="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"
+            )
+    return client
 
 def read_csv(filepath):
     images = pd.read_csv(filepath)
@@ -48,7 +51,7 @@ def copy_images_to_s3(classification, images_with_classification):
         else:
             image_type = "train"
         current_key = 'cse6250/' + image_with_classification
-        destination_key = 'cse6250/processed/' + formatted_classification + '/' + image_type + "/" + new_image_path
+        destination_key = 'cse6250/processed/' + image_type + "/" + formatted_classification + '/' + new_image_path
         copy_image_to_s3(current_key, destination_key)
     return True
 
@@ -56,10 +59,10 @@ def copy_image_to_s3(current_key, dest_key):
     s3_client = configure_s3_client()
     print("copying current_key: " + current_key)
     print("to destination_key: " + dest_key)
-    #source_key = { 'Bucket': 'harrisjosh-project-data', key: current_key}
-    #destination_key = { 'Bucket': 'harrisjosh-project-data', key: dest_key}
-    #s3.meta.client.copy_object(CopySource=source_key, Bucket='harrisjosh-project-data', Key=dest_key)
-    return True
+    source_key = { 'Bucket': 'harrisjosh-project-data', 'Key': current_key}
+    destination_key = { 'Bucket': 'harrisjosh-project-data', 'Key': dest_key}
+    copy_cmd = s3_client.copy_object(CopySource=source_key, Bucket='harrisjosh-project-data', Key=dest_key)
+    return copy_cmd
 
 def main():
     filepath = sys.argv[1]
