@@ -33,7 +33,9 @@ def fit(model, optimizer, epochs, train, test):
     print('\n\nTraining Starting @ {}'.format(datetime.datetime.now()))
     
     #Train for specified number of epochs
+    tf.summary.trace_on(graph=True, profiler=False)
     for epoch in range(epochs):
+        
         #forward prop and backwards prop for current epoch on training batches
         for (x_train, y_train, _) in train:
             train_step(x_train, x_train)
@@ -42,12 +44,13 @@ def fit(model, optimizer, epochs, train, test):
             #checkpoint model
         checkpoint.save(file_prefix=checkpoint_prefix)
             #predict on test image
-        pred_y = model(tf.expand_dims(test_img, 0))
+        pred_y = model(test_img)
             #write loss, test image, and predicted image to Tensorboard logs
         with train_summary_writer.as_default():
             tf.summary.scalar('loss', loss_metric.result(), step=epoch)
-            tf.summary.image('original', tf.expand_dims(test_img, 0), step=epoch)
-            tf.summary.image('predicted', pred_y, step=epoch)
+            tf.summary.image('original', test_img, max_outputs=10, step=epoch)
+            tf.summary.image('predicted', pred_y, max_outputs=10, step=epoch)
+            tf.summary.trace_export(name="train_step", step=0)
             #Log training loss to console for monitoring as well
         print('Epoch [%s]: mean loss [%s]' % (epoch, loss_metric.result().numpy()))
         #reset the loss metric after each epoch
@@ -74,7 +77,7 @@ args = parser.parse_args()
 img_dir = args.input_
 checkpoint_dir = args.output
 tensorboard_dir = args.tensorboard
-epochs = args.epochs
+epochs = int(args.epochs)
 batches = int(args.batches)
 clean_logs = args.clean_logs
 clean_ckpts = args.clean_checkpoints
@@ -134,14 +137,16 @@ if (clean_ckpts.lower() == 'true') | (force == 'true') :
 
 '''Data Input/Pipeline and Model Section'''
 #input pipeline
-train_dataset = make_dataset()
+
+#train_path = os.path.join(args.input_, "train")
+train_dataset = make_dataset(args.input_)
 
 #extract a test image to be logged to tensorboard during training
 test = train_dataset.take(1)
 for test_img, y, clss in test:
     test_img=test_img.numpy()
 #test_img returns a dataset of batch size - extract the first image in the batch to be the test image
-test_img = test_img[0]
+#test_img = test_img
 
 
 '''Declare Model, Optimizer, and Metrics Section'''

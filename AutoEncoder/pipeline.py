@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import pathlib
+import os
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
@@ -86,8 +87,9 @@ def parse_fn(example):
   label = tf.one_hot(idx, depth)
   return image, label, parsed["classname"]
 
-def make_dataset():
-  files = tf.data.Dataset.list_files("/home/scott/CSE6250/tfrecords/*.tfrecord")
+def make_dataset(path):
+  list_of_tfrecords = os.path.join(path, "*.tfrecord")
+  files = tf.data.Dataset.list_files(list_of_tfrecords)
   dataset = files.interleave(
     tf.data.TFRecordDataset, cycle_length=1,
     num_parallel_calls=tf.data.experimental.AUTOTUNE)
