@@ -80,7 +80,7 @@ def parse_fn(example):
   parsed = tf.io.parse_single_example(example, example_fmt)
   image = tf.io.decode_jpeg(parsed["image"])
   image = tf.image.convert_image_dtype(image, tf.float32)
-  image = tf.image.resize(image, [299,299])
+  #image = tf.image.resize(image, [299,299])
 
   idx = int(parsed['label'])
   depth = 13

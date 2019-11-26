@@ -18,14 +18,18 @@ def train_step(x_train, y_train):
         #forward prop
         reconstruction = model(x_train, training=True)
         #calculate loss
-        loss = mse_loss_fn(y_train, reconstruction)
+        loss = train_mse_loss_fn(y_train, reconstruction)
         #backwards prop - calculate gradients
         grads = tape.gradient(loss, model.trainable_variables)
         #update weights
         optimizer.apply_gradients(zip(grads, model.trainable_variables))
     #update loss metric with current batch loss
-    loss_metric(loss)
-        
+    train_loss_metric(loss)
+
+def valid_loss(x_val, y_val):
+    reconstruction = model(x_val, training=True)
+    loss = valid_mse_loss_fn(y_val, reconstruction)
+    valid_loss_metric(loss)
 
 #fit function       
 def fit(model, optimizer, epochs, train, test):
@@ -33,28 +37,37 @@ def fit(model, optimizer, epochs, train, test):
     print('\n\nTraining Starting @ {}'.format(datetime.datetime.now()))
     
     #Train for specified number of epochs
-    tf.summary.trace_on(graph=True, profiler=False)
     for epoch in range(epochs):
-        
+        print('EPOCH: {}'.format(epoch))
         #forward prop and backwards prop for current epoch on training batches
         for (x_train, y_train, _) in train:
             train_step(x_train, x_train)
+            
+        
+            
         #save model checkpoint every 10 epochs and write Tensorboard summary updates
-        #if (epoch + 1) % 10 == 0:
+        if (epoch) % 10 == 0:
+            for (x_val, y_val, _) in test:
+                valid_loss(x_val, x_val)
+                
             #checkpoint model
-        checkpoint.save(file_prefix=checkpoint_prefix)
+            checkpoint.save(file_prefix=checkpoint_prefix)
+            
             #predict on test image
-        pred_y = model(test_img)
+            pred_y = model(test_img)
+            
             #write loss, test image, and predicted image to Tensorboard logs
-        with train_summary_writer.as_default():
-            tf.summary.scalar('loss', loss_metric.result(), step=epoch)
-            tf.summary.image('original', test_img, max_outputs=10, step=epoch)
-            tf.summary.image('predicted', pred_y, max_outputs=10, step=epoch)
-            tf.summary.trace_export(name="train_step", step=0)
-            #Log training loss to console for monitoring as well
-        print('Epoch [%s]: mean loss [%s]' % (epoch, loss_metric.result().numpy()))
+            with train_summary_writer.as_default():
+                tf.summary.scalar('train_loss', train_loss_metric.result(), step=epoch)
+                tf.summary.scalar('valid_loss', valid_loss_metric.result(), step=epoch)
+                tf.summary.image('original', test_img, max_outputs=10, step=epoch)
+                tf.summary.image('predicted', pred_y, max_outputs=10, step=epoch)
+        #Log training loss to console for monitoring as well
+        print('Epoch [%s]: mean loss (train/val): [%s]/[%s]' % (epoch, train_loss_metric.result().numpy(),valid_loss_metric.result().numpy()))
         #reset the loss metric after each epoch
-        loss_metric.reset_states()
+        train_loss_metric.reset_states()
+        valid_loss_metric.reset_states()
+    model.save('support_devices.h5')
 
 
 
@@ -62,7 +75,8 @@ def fit(model, optimizer, epochs, train, test):
 '''Section for CLI arguments and descriptions'''
 parser = argparse.ArgumentParser()
 parser.add_argument('-i', '--input_directory', dest='input_', help="Directory location of training images", default='.')
-parser.add_argument('-o', '--output_directory', dest='output', help="Directory to save models", default='./training_checkpoints')
+parser.add_argument('-o', '--output_directory', dest='output', help="Directory to save all data", default='.')
+parser.add_argument('-c', '--class', dest='cls', help='class')
 parser.add_argument('-e', '--epochs', dest='epochs', help='Number of training epochs', default=100)
 parser.add_argument('-t', '--tensorboard', dest='tensorboard', help='Output directory for tensorboard logs', default='logs/gradient_tape/')
 parser.add_argument('-b', '--batch', dest='batches', help='Batch Size for training data', default=64)
@@ -82,6 +96,8 @@ batches = int(args.batches)
 clean_logs = args.clean_logs
 clean_ckpts = args.clean_checkpoints
 force_clean = args.force
+
+
 
 
 '''Directory Cleanup Logic Section -- Used to Delete old Tensorboard logs and Model Checkpoints if commands passed from CLI to do so'''
@@ -137,14 +153,20 @@ if (clean_ckpts.lower() == 'true') | (force == 'true') :
 
 '''Data Input/Pipeline and Model Section'''
 #input pipeline
+train_path = os.path.join(args.input_, "train")
+train_path = os.path.join(train_path, args.cls)
+train_dataset = make_dataset(train_path)
 
-#train_path = os.path.join(args.input_, "train")
-train_dataset = make_dataset(args.input_)
+valid_path = os.path.join(args.input_, "valid")
+valid_path = os.path.join(valid_path, args.cls)
+valid_dataset = make_dataset(valid_path)
 
 #extract a test image to be logged to tensorboard during training
-test = train_dataset.take(1)
+test = valid_dataset.take(1)
 for test_img, y, clss in test:
     test_img=test_img.numpy()
+              
+print('Test Shape is: {}'.format(test_img[0].shape))
 #test_img returns a dataset of batch size - extract the first image in the batch to be the test image
 #test_img = test_img
 
@@ -157,27 +179,30 @@ model = XrayAE_Functional()
 optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
 #Declare loss metrics
-mse_loss_fn = tf.keras.losses.MAE
-loss_metric = tf.keras.metrics.Mean('train_loss')
+train_mse_loss_fn = tf.keras.losses.MAE
+train_loss_metric = tf.keras.metrics.Mean('train_loss')
+valid_mse_loss_fn = tf.keras.losses.MAE
+valid_loss_metric = tf.keras.metrics.Mean('valid_loss')
 
 
 '''Admin Section'''
 #Tensorboard logging
 current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
-train_log_dir = tensorboard_dir + current_time + '/train'
-#test_log_dir = tensorboard_dir + current_time + '/test'
+train_log_dir = os.path.join(args.output, current_time)
 train_summary_writer = tf.summary.create_file_writer(train_log_dir)
-#test_summary_writer = tf.summary.create_file_writer(test_log_dir)
+
 
 #Model Checkpoint writer
-checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
+checkpoint_prefix = os.path.join(args.output, "ckpt")
 checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
+
+model_save_dir = os.path.join(args.output, "model")
 
 
 
 '''Model Training Section'''
 #Train model
-fit(model, optimizer, epochs, train_dataset, train_dataset)
+fit(model, optimizer, epochs, train_dataset, valid_dataset)
 
 
 
