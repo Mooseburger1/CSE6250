@@ -235,7 +235,7 @@ def XrayAE_Functional():
 
 
 
-  inputs = tf.keras.layers.Input(shape=[299,299,1])
+  inputs = tf.keras.layers.Input(shape=[299,299,3])
   x = inputs
 
   
