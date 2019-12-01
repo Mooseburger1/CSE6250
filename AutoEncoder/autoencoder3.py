@@ -69,7 +69,7 @@ def fit(model, optimizer, epochs, train, test):
         #reset the loss metric after each epoch
         train_loss_metric.reset_states()
         valid_loss_metric.reset_states()
-    model.save(model_save_name)
+    model.save('model.h5')
 
 
 
