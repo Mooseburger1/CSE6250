@@ -33,9 +33,10 @@ def equalize(img):
     return cl
 
 def _load_image(path):
-    image = cv2.imread(path,3)
+    image = cv2.imread(path,0)
     if image is not None:
         image = equalize(image)
+        iamge = cv2.cvtColor(image,cv2.COLOR_GRAY2RGB)
         image = cv2.resize(image, (299,299))
         return image
     return None
