@@ -69,7 +69,7 @@ def fit(model, optimizer, epochs, train, test):
         #reset the loss metric after each epoch
         train_loss_metric.reset_states()
         valid_loss_metric.reset_states()
-    model.save(args.cls)
+    model.save(model_save_name)
 
 
 
@@ -159,9 +159,17 @@ train_path = os.path.join(args.input_, "train")
 train_path = os.path.join(train_path, args.cls)
 train_dataset = make_dataset(train_path)
 
-valid_path = os.path.join(args.input_, "valid")
-valid_path = os.path.join(valid_path, args.cls)
-valid_dataset = make_dataset(valid_path)
+try:
+    valid_path = os.path.join(args.input_, "valid")
+    valid_path = os.path.join(valid_path, args.cls)
+    valid_dataset = make_dataset(valid_path)
+except:
+    print('WARNING: NO VALID DATASET FOUND - USING A SUBSET OF TRAIN SET AS VALID SET')
+    valid_path = os.path.join(args.input_, "train")
+    valid_path = os.path.join(train_path, args.cls)
+    valid_dataset = make_dataset(valid_path)
+    valid_dataset = valid_dataset.take(2)
+
 
 #extract a test image to be logged to tensorboard during training
 test = valid_dataset.take(1)
@@ -186,12 +194,16 @@ valid_loss_metric = tf.keras.metrics.Mean('valid_loss')
 '''Admin Section'''
 #Tensorboard logging
 current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
-train_log_dir = os.path.join(args.output, current_time)
+train_log_path = os.path.join(args.output, 'logs')
+train_log_dir = os.path.join(train_log_path, current_time)
 train_summary_writer = tf.summary.create_file_writer(train_log_dir)
+model_save_dir = os.path.join(args.output, 'model')
+model_save_name = os.path.join(model_save_dir, args.cls)
 
 
 #Model Checkpoint writer
-checkpoint_prefix = os.path.join(args.output, "ckpt")
+checkpoint_dir = os.path.join(args.output, "checkpoints")
+checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
 checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
 restore_dir = os.path.join(checkpoint_dir, 'checkpoints')
 print("Restoring latest checkpoint from {}".format(restore_dir))
