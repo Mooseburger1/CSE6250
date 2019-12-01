@@ -198,7 +198,7 @@ train_log_path = os.path.join(args.output, 'logs')
 train_log_dir = os.path.join(train_log_path, current_time)
 train_summary_writer = tf.summary.create_file_writer(train_log_dir)
 model_save_dir = os.path.join(args.output, 'model')
-model_save_name = os.path.join(model_save_dir, args.cls)
+model_save_name = os.path.join(model_save_dir, args.cls + '.h5')
 
 
 #Model Checkpoint writer
