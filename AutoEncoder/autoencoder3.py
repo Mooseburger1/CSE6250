@@ -202,10 +202,10 @@ model_save_name = os.path.join(model_save_dir, args.cls)
 
 
 #Model Checkpoint writer
-checkpoint_dir = os.path.join(args.output, "checkpoints")
-checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
+#checkpoint_dir = os.path.join(args.output, "checkpoints")
+checkpoint_prefix = os.path.join(args.output, "ckpt")
 checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
-restore_dir = os.path.join(checkpoint_dir, 'checkpoints')
+restore_dir = os.path.join(checkpoint_prefix, 'checkpoints')
 print("Restoring latest checkpoint from {}".format(restore_dir))
 try:
     checkpoint.restore(tf.train.latest_checkpoint(restore_dir))
@@ -213,7 +213,7 @@ try:
 except Exception as e:
     print("Restore Failed: {}".format(e))
 
-model_save_dir = os.path.join(args.output, "model")
+
 
 
 
