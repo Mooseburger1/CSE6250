@@ -33,7 +33,7 @@ def equalize(img):
     return cl
 
 def _load_image(path):
-    image = cv2.imread(path,0)
+    image = cv2.imread(path,3)
     if image is not None:
         image = equalize(image)
         image = cv2.resize(image, (299,299))
