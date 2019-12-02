@@ -166,7 +166,7 @@ try:
 except:
     print('WARNING: NO VALID DATASET FOUND - USING A SUBSET OF TRAIN SET AS VALID SET')
     valid_path = os.path.join(args.input_, "train")
-    valid_path = os.path.join(train_path, args.cls)
+    valid_path = os.path.join(valid_path, args.cls)
     valid_dataset = make_dataset(valid_path)
     valid_dataset = valid_dataset.take(2)
 
