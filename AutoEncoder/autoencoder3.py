@@ -205,7 +205,7 @@ model_save_name = os.path.join(model_save_dir, args.cls + '.h5')
 #checkpoint_dir = os.path.join(args.output, "checkpoints")
 checkpoint_prefix = os.path.join(args.output, "ckpt")
 checkpoint = tf.train.Checkpoint(optimizer=optimizer, model=model)
-restore_dir = os.path.join(checkpoint_prefix, 'checkpoints')
+restore_dir = os.path.join(args.output, 'checkpoints')
 print("Restoring latest checkpoint from {}".format(restore_dir))
 try:
     checkpoint.restore(tf.train.latest_checkpoint(restore_dir))
