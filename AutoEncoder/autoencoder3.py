@@ -46,7 +46,7 @@ def fit(model, optimizer, epochs, train, test):
         
             
         #save model checkpoint every 10 epochs and write Tensorboard summary updates
-        if (epoch) % 1 == 0:
+        if (epoch) % 10 == 0:
             for (x_val, y_val, _) in test:
                 valid_loss(x_val, x_val)
                 
