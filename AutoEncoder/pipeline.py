@@ -83,7 +83,7 @@ def parse_fn(example):
   image = tf.image.grayscale_to_rgb(image)
 
   idx = int(parsed['label'])
-  depth = 13
+  depth = 14
   label = tf.one_hot(idx, depth)
   return image, label, parsed["classname"]
 
