@@ -9,6 +9,9 @@ import datetime
 import argparse
 import os
 import sys
+import warnings
+
+warnings.filterwarnings('once')
 
 
 #training function
@@ -40,13 +43,17 @@ def fit(model, optimizer, epochs, train, test):
     for epoch in range(epochs):
         print('EPOCH: {}'.format(epoch))
         #forward prop and backwards prop for current epoch on training batches
+
+
         for (x_train, y_train, _) in train:
+            if epoch == 0:
+                tf.summary.trace_on(graph=True, profiler=False)
             train_step(x_train, x_train)
             
         
             
         #save model checkpoint every 10 epochs and write Tensorboard summary updates
-        if (epoch) % 10 == 0:
+        if (epoch) % 1 == 0:
             for (x_val, y_val, _) in test:
                 valid_loss(x_val, x_val)
                 
@@ -58,6 +65,8 @@ def fit(model, optimizer, epochs, train, test):
             
             #write loss, test image, and predicted image to Tensorboard logs
             with train_summary_writer.as_default():
+                if epoch==0:
+                    tf.summary.trace_export(name="my_func_trace", step=0)
                 tf.summary.scalar('train_loss', train_loss_metric.result(), step=epoch)
                 tf.summary.scalar('valid_loss', valid_loss_metric.result(), step=epoch)
                 tf.summary.image('original', test_img, max_outputs=10, step=epoch)
