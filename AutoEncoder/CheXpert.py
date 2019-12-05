@@ -254,3 +254,53 @@ def XrayAE_Functional():
   x = tf.keras.layers.Cropping2D(cropping=((2,3), (2,3)), input_shape=(304,304,1))(x)
 
   return tf.keras.Model(inputs=inputs, outputs=x)
+
+
+
+
+def Model1(transfer_model, cheatsheet_generator):
+    initializer = tf.random_normal_initializer(0., 0.02)
+    inputs = tf.keras.layers.Input(shape=[299,299,3])
+    
+    transfer = tf.keras.Sequential([transfer_model])
+    cheat = cheatsheet_generator()
+    
+    x_trans = transfer(inputs)
+    x_trans = tf.keras.layers.Flatten()(x_trans)
+    x_cheat = cheat(inputs)
+    x_cheat = tf.keras.layers.Flatten()(x_cheat)
+    
+    x = tf.keras.layers.Concatenate()([x_trans, x_cheat])
+    
+    
+    
+    x = tf.keras.layers.Dense(units=100, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='sigmoid', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=14, 
+                              activation='softmax', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    
+    return tf.keras.Model(inputs=inputs, outputs=x)
+
+
+def Model2():
+    pass
