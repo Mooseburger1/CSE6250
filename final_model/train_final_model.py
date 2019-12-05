@@ -252,9 +252,9 @@ AE_models = restore_models(list_of_model_paths)
 
 '''Model and Optimizer'''
 #Model Architecture
-if args.model_number == 1:
+if int(args.model_number) == 1:
     model = Model1(inception_res, cheatsheet)
-elif args.model_number == 2:
+elif int(args.model_number) == 2:
     model = Model2()
 else:
     print('Model architecture parameter must be 1 or 2 - Program terminating')
