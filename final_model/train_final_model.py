@@ -230,8 +230,8 @@ valid_dataset = make_dataset2(valid_path)
 test_img = valid_dataset.take(1)
 
 for x,y,z in test_img:
-    test_image = x[0]
-    test_label = y[0]
+    test_image = tf.expand_dims(x[0], 0)
+    test_label = tf.expand_dims(y[0], 0)
     _ = z[0]
 
 
