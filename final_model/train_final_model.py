@@ -1,5 +1,9 @@
 import sys
+import os
 sys.path.append('..')
+
+from os.path import dirname, abspath
+sys.path.append(dirname(dirname(abspath(__file__))))
 
 import tensorflow as tf
 from tensorflow.keras.models import load_model
@@ -12,7 +16,6 @@ import shutil
 import time
 import datetime
 import argparse
-import os
 import glob
 import io
 
@@ -242,7 +245,7 @@ inception_res.trainable = False
 
 #List of Trained AutoEncoder Models
 print('Restoring Trained AutoEncoder Models')
-list_of_model_paths = glob.glob(args.models + 'model/*.h5')
+list_of_model_paths = glob.glob(args.models + '*/model/*.h5')
 AE_models = restore_models(list_of_model_paths)
 
 
