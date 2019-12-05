@@ -221,7 +221,7 @@ args = parser.parse_args()
 train_path = os.path.join(args.tfrs, "train")
 train_dataset = make_dataset2(train_path)
 
-valid_path = os.path.join(args.input_, "valid")
+valid_path = os.path.join(args.tfrs, "valid")
 valid_dataset = make_dataset2(valid_path)
 
 
