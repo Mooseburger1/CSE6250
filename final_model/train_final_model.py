@@ -143,7 +143,7 @@ def train_step(x_train, y_train):
 @tf.function
 def valid_step(x_val, y_val):
     predictions = model(x_val, training=True)
-    loss = tf.keras.losses.sparse_categorical_crossentropy(y_val, predictions, from_logits=False)
+    loss = tf.keras.losses.sparse_categorical_crossentropy(y_val, promedictions, from_logits=False)
 
     valid_loss_metric(loss)
     valid_acc(y_val, predictions)
@@ -172,9 +172,9 @@ def fit(model, optimizer, epochs, train, test):
             checkpoint.save(file_prefix=checkpoint_prefix)
             
             #predict on test image
-            pred_y = model(test_image)
+            #pred_y = model(test_image)
 
-            figure = plot_it(pred_y, test_label, test_image)
+            #figure = plot_it(pred_y, test_label, test_image)
             
             #write loss, test image, and predicted image to Tensorboard logs
             with train_summary_writer.as_default():
@@ -182,7 +182,7 @@ def fit(model, optimizer, epochs, train, test):
                 #     tf.summary.trace_export(name="my_func_trace", step=0)
                 tf.summary.scalar('train_loss', train_loss_metric.result(), step=epoch)
                 tf.summary.scalar('train_accuracy', train_acc.result(), step=epoch)
-                tf.summary.image('test_image', plot_to_image(figure), step=epoch)
+                #tf.summary.image('test_image', plot_to_image(figure), step=epoch)
                 
 
 
@@ -191,9 +191,10 @@ def fit(model, optimizer, epochs, train, test):
                 tf.summary.scalar('valid_accuracy', valid_acc.result(), step=epoch)
 
             #Log training loss to console for monitoring as well
-            print('Epoch [%s]: mean loss (train/val): [%s]/[%s]' % (epoch, train_loss_metric.result().numpy(),valid_loss_metric.result().numpy()))
+            print('Epoch [%s]: mean loss (train/val): [%s]/[%s] \nEpoch [%s]: accuracy (train/val): [%s]/[%s]' % (epoch, train_loss_metric.result().numpy(),valid_loss_metric.result().numpy(), epoch, train_acc.result().numpy(), valid_acc.result().numpy()))
+            
         else:
-            print('Epoch [%s]: mean loss (train only): [%s]' % (epoch, train_loss_metric.result().numpy()))
+            print('Epoch [%s]: mean loss (train only): [%s] \nEpoch [%s]: accuracy (train only): [%s]' % (epoch, train_loss_metric.result().numpy(), epoch, train_acc.result().numpy()))
         #reset the loss metric after each epoch
         train_loss_metric.reset_states()
         valid_loss_metric.reset_states()
