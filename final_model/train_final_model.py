@@ -131,7 +131,7 @@ def train_step(x_train, y_train):
         #forward prop
         predictions = model(x_train, training=True)
         #calculate loss
-        loss = tf.keras.losses.sparse_categorical_crossentropy(y_train+0.0, predictions, from_logits=False)
+        loss = tf.keras.losses.sparse_categorical_crossentropy(y_train, predictions, from_logits=False)
         #backwards prop - calculate gradients
         grads = tape.gradient(loss, model.trainable_variables)
         #update weights
@@ -143,7 +143,7 @@ def train_step(x_train, y_train):
 @tf.function
 def valid_step(x_val, y_val):
     predictions = model(x_val, training=True)
-    loss = tf.keras.losses.sparse_categorical_crossentropy(y_val+0.0, predictions, from_logits=False)
+    loss = tf.keras.losses.sparse_categorical_crossentropy(y_val, predictions, from_logits=False)
 
     valid_loss_metric(loss)
     valid_acc(y_val, predictions)
