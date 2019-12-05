@@ -143,7 +143,7 @@ def train_step(x_train, y_train):
 @tf.function
 def valid_step(x_val, y_val):
     predictions = model(x_val, training=True)
-    loss = tf.keras.losses.sparse_categorical_crossentropy(y_val, promedictions, from_logits=False)
+    loss = tf.keras.losses.sparse_categorical_crossentropy(y_val, predictions, from_logits=False)
 
     valid_loss_metric(loss)
     valid_acc(y_val, predictions)
