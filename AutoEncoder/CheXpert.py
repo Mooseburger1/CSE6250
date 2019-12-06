@@ -303,16 +303,22 @@ def Model1_(transfer_model, cheatsheet_generator):
 
 def Model1():
     initializer = tf.random_normal_initializer(0., 0.02)
-    inputs = tf.keras.layers.Input(shape=[299,299,3])
+    inputs = tf.keras.layers.Input(shape=[3853146])
     
     
-    x = tf.keras.layers.Dense(units=100, 
+    x = tf.keras.layers.Dense(units=50, 
                               activation='relu', 
                               use_bias=True, 
                               kernel_initializer=initializer, 
                               bias_initializer=initializer)(inputs)
     
-    x = tf.keras.layers.Dense(units=50, 
+    x = tf.keras.layers.Dense(units=100, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+
+    x = tf.keras.layers.Dense(units=100, 
                               activation='relu', 
                               use_bias=True, 
                               kernel_initializer=initializer, 
