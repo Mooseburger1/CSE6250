@@ -180,10 +180,10 @@ def fit(model, optimizer, epochs, train, test):
             with train_summary_writer.as_default():
                 # if epoch==0:
                 #     tf.summary.trace_export(name="my_func_trace", step=0)
-                tf.summary.scalar('train_loss', train_loss_metric.result(), step=epoch)
+                tf.summary.scalar('train_loss', train_loss_metric.result().numpy(), step=epoch)
                 tf.summary.scalar('train_accuracy', train_acc.result(), step=epoch)
                 #tf.summary.image('test_image', plot_to_image(figure), step=epoch)
-                tf.summary.scalar('valid_loss', valid_loss_metric.result(), step=epoch)
+                tf.summary.scalar('valid_loss', valid_loss_metric.result().numpy(), step=epoch)
                 tf.summary.scalar('valid_accuracy', valid_acc.result(), step=epoch)
 
                 
