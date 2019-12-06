@@ -172,11 +172,13 @@ def fit(model, optimizer, epochs, train, test):
             # if epoch == 0:
             #     tf.summary.trace_on(graph=True, profiler=False)
             x_train = join(x_train)
+            print('X-TRAIN SHAPE IS: ',x_train.shape)
             train_step(x_train, y_train)
 
         #save model checkpoint every 10 epochs and write Tensorboard summary updates
         if (epoch) % 1 == 0:
             for (x_val, y_val, _) in test:
+                x_val = join(x_val)
                 valid_step(x_val, y_val)
                 
             #checkpoint model
