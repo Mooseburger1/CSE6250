@@ -131,7 +131,7 @@ def train_step(x_train, y_train):
         #forward prop
         predictions = model(x_train, training=True)
         #calculate loss
-        loss = tf.keras.losses.sparse_categorical_crossentropy(y_train, predictions, from_logits=False)
+        loss = train_loss_object(y_train, predictions)
         #backwards prop - calculate gradients
         grads = tape.gradient(loss, model.trainable_variables)
         #update weights
@@ -143,7 +143,7 @@ def train_step(x_train, y_train):
 @tf.function
 def valid_step(x_val, y_val):
     predictions = model(x_val, training=True)
-    loss = tf.keras.losses.sparse_categorical_crossentropy(y_val, predictions, from_logits=False)
+    loss = valid_loss_object(y_val, predictions)
 
     valid_loss_metric(loss)
     valid_acc(y_val, predictions)
@@ -258,7 +258,7 @@ AE_models = restore_models(list_of_model_paths)
 if int(args.model_number) == 1:
     model = Model1(inception_res, cheatsheet)
 elif int(args.model_number) == 2:
-    model = Model2()
+    pass
 else:
     print('Model architecture parameter must be 1 or 2 - Program terminating')
     sys.exit()
@@ -268,8 +268,10 @@ optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
 '''Metrics'''
 #Declare loss metrics
+train_loss_object = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
 train_loss_metric = tf.keras.metrics.Mean('train_loss')
 train_acc = tf.keras.metrics.SparseCategoricalAccuracy('train_accuracy')
+valid_loss_object = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
 valid_loss_metric = tf.keras.metrics.Mean('valid_loss')
 valid_acc = tf.keras.metrics.SparseCategoricalAccuracy('valid_accuracy')
 

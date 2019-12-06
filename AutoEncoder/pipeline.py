@@ -121,7 +121,7 @@ def make_dataset2(path):
     tf.data.TFRecordDataset, cycle_length=1,
     num_parallel_calls=tf.data.experimental.AUTOTUNE)
   dataset = dataset.shuffle(buffer_size=500)
-  dataset = dataset.map(map_func=parse_fn2)
+  dataset = dataset.map(map_func=parse_fn)
   dataset = dataset.batch(batch_size=10)
   dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
   return dataset
