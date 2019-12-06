@@ -20,6 +20,16 @@ import glob
 import io
 
 
+def join(x):
+    x_trans = inception_res(x)
+    x_trans = tf.keras.layers.Flatten()(x_trans)
+    x_cheat = cheatsheet_generator(x)
+    x_cheat = tf.keras.layers.Flatten()(x_cheat)
+    
+    x = tf.keras.layers.Concatenate()([x_trans, x_cheat])
+    return x
+
+
 class_names={ 0:'Lung_Lesion',
               1:'Atelectasis',
               2: 'No_Finding',
@@ -131,7 +141,7 @@ def train_step(x_train, y_train):
         #forward prop
         predictions = model(x_train, training=True)
         #calculate loss
-        loss = train_loss_object(y_train, predictions)
+        loss = tf.keras.losses.sparse_categorical_crossentropy(y_train, predictions, from_logits=False)
         #backwards prop - calculate gradients
         grads = tape.gradient(loss, model.trainable_variables)
         #update weights
@@ -143,7 +153,7 @@ def train_step(x_train, y_train):
 @tf.function
 def valid_step(x_val, y_val):
     predictions = model(x_val, training=True)
-    loss = valid_loss_object(y_val, predictions)
+    loss = tf.keras.losses.sparse_categorical_crossentropy(y_val, predictions, from_logits=False)
 
     valid_loss_metric(loss)
     valid_acc(y_val, predictions)
@@ -161,6 +171,7 @@ def fit(model, optimizer, epochs, train, test):
         for (x_train, y_train, _) in train:
             # if epoch == 0:
             #     tf.summary.trace_on(graph=True, profiler=False)
+            x_train = join(x_train)
             train_step(x_train, y_train)
 
         #save model checkpoint every 10 epochs and write Tensorboard summary updates
@@ -180,13 +191,16 @@ def fit(model, optimizer, epochs, train, test):
             with train_summary_writer.as_default():
                 # if epoch==0:
                 #     tf.summary.trace_export(name="my_func_trace", step=0)
-                tf.summary.scalar('train_loss', train_loss_metric.result().numpy(), step=epoch)
+                tf.summary.scalar('train_loss', train_loss_metric.result(), step=epoch)
                 tf.summary.scalar('train_accuracy', train_acc.result(), step=epoch)
                 #tf.summary.image('test_image', plot_to_image(figure), step=epoch)
-                tf.summary.scalar('valid_loss', valid_loss_metric.result().numpy(), step=epoch)
+                
+
+
+            with valid_summary_writer.as_default():
+                tf.summary.scalar('valid_loss', valid_loss_metric.result(), step=epoch)
                 tf.summary.scalar('valid_accuracy', valid_acc.result(), step=epoch)
 
-                
             #Log training loss to console for monitoring as well
             print('Epoch [%s]: mean loss (train/val): [%s]/[%s] \nEpoch [%s]: accuracy (train/val): [%s]/[%s]' % (epoch, train_loss_metric.result().numpy(),valid_loss_metric.result().numpy(), epoch, train_acc.result().numpy(), valid_acc.result().numpy()))
             
@@ -247,15 +261,16 @@ print('Restoring Trained AutoEncoder Models')
 list_of_model_paths = glob.glob(args.models + '/*/model/*.h5')
 
 AE_models = restore_models(list_of_model_paths)
+cheatsheet_generator = cheatsheet()
 
 
 
 '''Model and Optimizer'''
 #Model Architecture
 if int(args.model_number) == 1:
-    model = Model1(inception_res, cheatsheet)
+    model = Model1()
 elif int(args.model_number) == 2:
-    pass
+    model = Model2()
 else:
     print('Model architecture parameter must be 1 or 2 - Program terminating')
     sys.exit()
@@ -264,11 +279,9 @@ else:
 optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 
 '''Metrics'''
-#Declare loss metrics
-train_loss_object = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
+#Declare loss metricszy
 train_loss_metric = tf.keras.metrics.Mean('train_loss')
 train_acc = tf.keras.metrics.SparseCategoricalAccuracy('train_accuracy')
-valid_loss_object = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
 valid_loss_metric = tf.keras.metrics.Mean('valid_loss')
 valid_acc = tf.keras.metrics.SparseCategoricalAccuracy('valid_accuracy')
 
@@ -280,10 +293,10 @@ train_log_path = os.path.join(args.output, 'logs')
 train_log_dir = os.path.join(train_log_path, train_current_time)
 train_summary_writer = tf.summary.create_file_writer(train_log_dir)
 
-# valid_current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
-# valid_log_path = os.path.join(args.output, 'logs')
-# valid_log_dir = os.path.join(valid_log_path, valid_current_time)
-# valid_summary_writer = tf.summary.create_file_writer(valid_log_dir)
+valid_current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+valid_log_path = os.path.join(args.output, 'logs')
+valid_log_dir = os.path.join(valid_log_path, valid_current_time)
+valid_summary_writer = tf.summary.create_file_writer(valid_log_dir)
 
 #Model Checkpoint Object
 checkpoint_prefix = os.path.join(args.output, "checkpoints/ckpt")

@@ -258,7 +258,7 @@ def XrayAE_Functional():
 
 
 
-def Model1(transfer_model, cheatsheet_generator):
+def Model1_(transfer_model, cheatsheet_generator):
     initializer = tf.random_normal_initializer(0., 0.02)
     inputs = tf.keras.layers.Input(shape=[299,299,3])
     
@@ -301,6 +301,37 @@ def Model1(transfer_model, cheatsheet_generator):
     
     return tf.keras.Model(inputs=inputs, outputs=x)
 
+def Model1(transfer_model, cheatsheet_generator):
+    initializer = tf.random_normal_initializer(0., 0.02)
+    inputs = tf.keras.layers.Input(shape=[299,299,3])
+    
+    
+    x = tf.keras.layers.Dense(units=100, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(inputs)
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='sigmoid', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=14, 
+                              activation='softmax', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    
+    return tf.keras.Model(inputs=inputs, outputs=x)
 
 def Model2():
     pass
