@@ -172,12 +172,14 @@ def fit(model, optimizer, epochs, train, test):
             # if epoch == 0:
             #     tf.summary.trace_on(graph=True, profiler=False)
             x_train = join(x_train)
+            y_train = tf.cast(y_train, tf.float32)
             train_step(x_train, y_train)
 
         #save model checkpoint every 10 epochs and write Tensorboard summary updates
         if (epoch) % 1 == 0:
             for (x_val, y_val, _) in test:
                 x_val = join(x_val)
+                y_val = tf.cast(y_val, tf.float32)
                 valid_step(x_val, y_val)
                 
             #checkpoint model
@@ -278,10 +280,10 @@ optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
 '''Metrics'''
 #Declare loss metricszy
 train_loss_object = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
-train_acc = tf.keras.metrics.SparseCategoricalAccuracy('train_accuracy')
+train_acc = tf.keras.metrics.CategoricalAccuracy('train_accuracy')
 train_loss_metric = tf.keras.metrics.Mean('train_loss')
 valid_loss_object = tf.keras.losses.CategoricalCrossentropy(from_logits=False)
-valid_acc = tf.keras.metrics.SparseCategoricalAccuracy('valid_accuracy')
+valid_acc = tf.keras.metrics.CategoricalAccuracy('valid_accuracy')
 valid_loss_metric = tf.keras.metrics.Mean('valid_loss')
 
 
