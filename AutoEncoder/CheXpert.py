@@ -301,7 +301,7 @@ def Model1_(transfer_model, cheatsheet_generator):
     
     return tf.keras.Model(inputs=inputs, outputs=x)
 
-def Model1(transfer_model, cheatsheet_generator):
+def Model1():
     initializer = tf.random_normal_initializer(0., 0.02)
     inputs = tf.keras.layers.Input(shape=[299,299,3])
     
