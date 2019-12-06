@@ -171,6 +171,7 @@ def fit(model, optimizer, epochs, train, test):
         for (x_train, y_train, _) in train:
             # if epoch == 0:
             #     tf.summary.trace_on(graph=True, profiler=False)
+            print(x_train.shape)
             x_train = join(x_train)
             print('X-TRAIN SHAPE IS: ',x_train.shape)
             train_step(x_train, y_train)
