@@ -87,7 +87,7 @@ def parse_fn(example):
   label = tf.one_hot(idx, depth)
   return image, label, parsed["classname"]
 
-def make_dataset(path):
+def make_dataset(path, batch_size):
   list_of_tfrecords = os.path.join(path, "*.tfrecord")
   files = tf.data.Dataset.list_files(list_of_tfrecords)
   dataset = files.interleave(
@@ -95,7 +95,7 @@ def make_dataset(path):
     num_parallel_calls=tf.data.experimental.AUTOTUNE)
   dataset = dataset.shuffle(buffer_size=500)
   dataset = dataset.map(map_func=parse_fn)
-  dataset = dataset.batch(batch_size=10)
+  dataset = dataset.batch(batch_size=batch_size)
   dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
   return dataset
 
@@ -114,7 +114,7 @@ def parse_fn2(example):
   label = int(parsed['label'])
   return image, label, parsed["classname"]
 
-def make_dataset2(path):
+def make_dataset2(path, batch_size):
   list_of_tfrecords = os.path.join(path, "*/*.tfrecord")
   files = tf.data.Dataset.list_files(list_of_tfrecords)
   dataset = files.interleave(
@@ -122,6 +122,6 @@ def make_dataset2(path):
     num_parallel_calls=tf.data.experimental.AUTOTUNE)
   dataset = dataset.shuffle(buffer_size=500)
   dataset = dataset.map(map_func=parse_fn)
-  dataset = dataset.batch(batch_size=10)
+  dataset = dataset.batch(batch_size=batch_size)
   dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
   return dataset

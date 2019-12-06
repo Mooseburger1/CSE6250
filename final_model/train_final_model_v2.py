@@ -174,8 +174,8 @@ def fit(model, optimizer, epochs, train):#, test):
             x_train = join(x_train)
             y_train = tf.cast(y_train, tf.float32)
             train_step(x_train, y_train)
-            print('Batch {} Loss: {}'.format(count, train_loss_metric.result().numpy()))
-            print('Batch {} Acc: {}'.format(count, train_acc.result().numpy()))
+            print('Epoch {} Batch {} Loss: {}'.format(epoch, count, train_loss_metric.result().numpy()))
+            print('Epoch {} Batch {} Acc: {}'.format(epoch, count, train_acc.result().numpy()))
             count = count + 1
 
         #save model checkpoint every 10 epochs and write Tensorboard summary updates
@@ -234,7 +234,7 @@ args = parser.parse_args()
 '''Data Input/Pipeline and Model Section'''
 #input pipeline
 train_path = os.path.join(args.tfrs, "train")
-train_dataset = make_dataset2(train_path)
+train_dataset = make_dataset2(train_path, int(args.batches))
 
 # valid_path = os.path.join(args.tfrs, "valid")
 # valid_dataset = make_dataset2(valid_path)
