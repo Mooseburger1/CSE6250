@@ -183,13 +183,10 @@ def fit(model, optimizer, epochs, train, test):
                 tf.summary.scalar('train_loss', train_loss_metric.result(), step=epoch)
                 tf.summary.scalar('train_accuracy', train_acc.result(), step=epoch)
                 #tf.summary.image('test_image', plot_to_image(figure), step=epoch)
-                
-
-
-            with valid_summary_writer.as_default():
                 tf.summary.scalar('valid_loss', valid_loss_metric.result(), step=epoch)
                 tf.summary.scalar('valid_accuracy', valid_acc.result(), step=epoch)
 
+                
             #Log training loss to console for monitoring as well
             print('Epoch [%s]: mean loss (train/val): [%s]/[%s] \nEpoch [%s]: accuracy (train/val): [%s]/[%s]' % (epoch, train_loss_metric.result().numpy(),valid_loss_metric.result().numpy(), epoch, train_acc.result().numpy(), valid_acc.result().numpy()))
             
@@ -283,10 +280,10 @@ train_log_path = os.path.join(args.output, 'logs')
 train_log_dir = os.path.join(train_log_path, train_current_time)
 train_summary_writer = tf.summary.create_file_writer(train_log_dir)
 
-valid_current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
-valid_log_path = os.path.join(args.output, 'logs')
-valid_log_dir = os.path.join(valid_log_path, valid_current_time)
-valid_summary_writer = tf.summary.create_file_writer(valid_log_dir)
+# valid_current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
+# valid_log_path = os.path.join(args.output, 'logs')
+# valid_log_dir = os.path.join(valid_log_path, valid_current_time)
+# valid_summary_writer = tf.summary.create_file_writer(valid_log_dir)
 
 #Model Checkpoint Object
 checkpoint_prefix = os.path.join(args.output, "checkpoints/ckpt")
