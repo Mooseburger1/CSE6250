@@ -176,7 +176,7 @@ def fit(model, optimizer, epochs, train, test):
             train_step(x_train, y_train)
 
         #save model checkpoint every 10 epochs and write Tensorboard summary updates
-        if (epoch) % 1 == 0:
+        if (epoch) % 10 == 0:
             for (x_val, y_val, _) in test:
                 x_val = join(x_val)
                 y_val = tf.cast(y_val, tf.float32)
@@ -238,12 +238,12 @@ valid_dataset = make_dataset2(valid_path)
 
 
 '''Test Images to log on Tensorboard'''
-test_img = valid_dataset.take(1)
+# test_img = valid_dataset.take(1)
 
-for x,y,z in test_img:
-    test_image = tf.expand_dims(x[0], 0)
-    test_label = tf.expand_dims(y[0], 0)
-    _ = z[0]
+# for x,y,z in test_img:
+#     test_image = tf.expand_dims(x[0], 0)
+#     test_label = tf.expand_dims(y[0], 0)
+#     _ = z[0]
 
 
 
@@ -294,11 +294,6 @@ train_current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
 train_log_path = os.path.join(args.output, 'logs')
 train_log_dir = os.path.join(train_log_path, train_current_time)
 train_summary_writer = tf.summary.create_file_writer(train_log_dir)
-
-valid_current_time = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
-valid_log_path = os.path.join(args.output, 'logs')
-valid_log_dir = os.path.join(valid_log_path, valid_current_time)
-valid_summary_writer = tf.summary.create_file_writer(valid_log_dir)
 
 #Model Checkpoint Object
 checkpoint_prefix = os.path.join(args.output, "checkpoints/ckpt")
