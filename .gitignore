@@ -1,0 +1,7 @@
+Data/
+logs/
+tfrecords/
+__pycache__
+training_checkpoints/
+.ipynb_checkpoints
+pneumonia/

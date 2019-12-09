@@ -186,3 +186,187 @@ class XrayAE(tf.keras.Model):
             x = self.output_(x)
 
         return x
+
+
+
+
+
+def Downsample(filters, size, apply_maxpool=True):
+  initializer = tf.random_normal_initializer(0., 0.02)
+
+  result = tf.keras.Sequential()
+  result.add(
+      tf.keras.layers.Conv2D(filters, size, strides=1, padding='same',
+                             kernel_initializer=initializer, use_bias=False))
+
+  if apply_maxpool:
+    result.add(tf.keras.layers.MaxPool2D(2,2, 'same'))
+
+  result.add(tf.keras.layers.LeakyReLU())
+
+  return result
+
+def Upsample(filters, size, apply_dropout=False):
+  initializer = tf.random_normal_initializer(0., 0.02)
+
+  result = tf.keras.Sequential()
+  result.add(
+    tf.keras.layers.Conv2DTranspose(filters, size, strides=2,
+                                    padding='same',
+                                    kernel_initializer=initializer,
+                                    use_bias=False))
+
+  result.add(tf.keras.layers.BatchNormalization())
+
+  if apply_dropout:
+      result.add(tf.keras.layers.Dropout(0.5))
+
+  result.add(tf.keras.layers.ReLU())
+
+  return result
+
+def XrayAE_Functional():
+  initializer = tf.random_normal_initializer(0., 0.02)
+  last = tf.keras.layers.Conv2DTranspose(3, 4,
+                                         strides=2,
+                                         padding='same',
+                                         kernel_initializer=initializer,
+                                         activation='tanh') # (bs, 256, 256, 3)
+
+
+
+  inputs = tf.keras.layers.Input(shape=[299,299,3])
+  x = inputs
+
+  
+  x = Downsample(32,4,True)(x)
+  x = Downsample(32,4,True)(x)
+  x = Downsample(32,4,True)(x)
+  x = Downsample(16,4,True)(x)
+  x = tf.keras.layers.Flatten()(x)
+  x = tf.keras.layers.Dense(1200, input_shape=(5776,))(x)
+  x = tf.keras.layers.Dense(5776, input_shape=(1200,))(x)
+  x = tf.keras.layers.Reshape((19,19,16))(x)
+  x = Upsample(16,4,True)(x)
+  x = Upsample(32,4,True)(x)
+  x = Upsample(32,4,True)(x)
+  x = last(x)
+  x = tf.keras.layers.Cropping2D(cropping=((2,3), (2,3)), input_shape=(304,304,1))(x)
+
+  return tf.keras.Model(inputs=inputs, outputs=x)
+
+
+
+
+def Model1_(transfer_model, cheatsheet_generator):
+    initializer = tf.random_normal_initializer(0., 0.02)
+    inputs = tf.keras.layers.Input(shape=[299,299,3])
+    
+    transfer = tf.keras.Sequential([transfer_model])
+    cheat = cheatsheet_generator()
+    
+    x_trans = transfer(inputs)
+    x_trans = tf.keras.layers.Flatten()(x_trans)
+    x_cheat = cheat(inputs)
+    x_cheat = tf.keras.layers.Flatten()(x_cheat)
+    
+    x = tf.keras.layers.Concatenate()([x_trans, x_cheat])
+    
+    
+    
+    x = tf.keras.layers.Dense(units=100, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='sigmoid', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=14, 
+                              activation='softmax', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    
+    return tf.keras.Model(inputs=inputs, outputs=x)
+
+def Model1():
+    initializer = tf.random_normal_initializer(0., 0.02)
+    inputs = tf.keras.layers.Input(shape=[3853146])
+    
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(inputs)
+    
+    x = tf.keras.layers.Dense(units=100, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+
+    x = tf.keras.layers.Dense(units=100, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='sigmoid', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=14, 
+                              activation='softmax', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    
+    return tf.keras.Model(inputs=inputs, outputs=x)
+
+def Model2():
+    initializer = tf.random_normal_initializer(0., 0.02)
+    inputs = tf.keras.layers.Input(shape=[3853146])
+    
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(inputs)
+    
+    x = tf.keras.layers.Dense(units=100, 
+                              activation='relu', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=50, 
+                              activation='sigmoid', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    x = tf.keras.layers.Dense(units=14, 
+                              activation='softmax', 
+                              use_bias=True, 
+                              kernel_initializer=initializer, 
+                              bias_initializer=initializer)(x)
+    
+    
+    return tf.keras.Model(inputs=inputs, outputs=x)

@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import pathlib
+import os
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
@@ -61,3 +62,63 @@ def prepare_for_training(ds, BATCH_SIZE, cache=True, shuffle_buffer_size=1000):
     ds = ds.prefetch(buffer_size=AUTOTUNE)
 
     return ds
+
+
+
+
+
+def parse_fn(example):
+  "Parse TFExample records and perform simple data augmentation."
+  example_fmt = {
+    'image': tf.io.FixedLenFeature((), tf.string, ""),
+    'label': tf.io.FixedLenFeature((), tf.string, ""),
+    'classname': tf.io.FixedLenFeature((), tf.string, "")
+  }
+  parsed = tf.io.parse_single_example(example, example_fmt)
+  image = tf.io.decode_jpeg(parsed["image"])
+  image = tf.image.convert_image_dtype(image, tf.float32)
+  image = tf.image.grayscale_to_rgb(image)
+
+  idx = int(parsed['label'])
+  depth = 14
+  label = tf.one_hot(idx, depth)
+  return image, label, parsed["classname"]
+
+def make_dataset(path, batch_size):
+  list_of_tfrecords = os.path.join(path, "*.tfrecord")
+  files = tf.data.Dataset.list_files(list_of_tfrecords)
+  dataset = files.interleave(
+    tf.data.TFRecordDataset, cycle_length=1,
+    num_parallel_calls=tf.data.experimental.AUTOTUNE)
+  dataset = dataset.shuffle(buffer_size=500)
+  dataset = dataset.map(map_func=parse_fn)
+  dataset = dataset.batch(batch_size=batch_size)
+  dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+  return dataset
+
+def parse_fn2(example):
+  "Parse TFExample records and perform simple data augmentation."
+  example_fmt = {
+    'image': tf.io.FixedLenFeature((), tf.string, ""),
+    'label': tf.io.FixedLenFeature((), tf.string, ""),
+    'classname': tf.io.FixedLenFeature((), tf.string, "")
+  }
+  parsed = tf.io.parse_single_example(example, example_fmt)
+  image = tf.io.decode_jpeg(parsed["image"])
+  image = tf.image.convert_image_dtype(image, tf.float32)
+  image = tf.image.grayscale_to_rgb(image)
+
+  label = int(parsed['label'])
+  return image, label, parsed["classname"]
+
+def make_dataset2(path, batch_size):
+  list_of_tfrecords = os.path.join(path, "*/*.tfrecord")
+  files = tf.data.Dataset.list_files(list_of_tfrecords)
+  dataset = files.interleave(
+    tf.data.TFRecordDataset, cycle_length=1,
+    num_parallel_calls=tf.data.experimental.AUTOTUNE)
+  dataset = dataset.shuffle(buffer_size=500)
+  dataset = dataset.map(map_func=parse_fn)
+  dataset = dataset.batch(batch_size=batch_size)
+  dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+  return dataset
