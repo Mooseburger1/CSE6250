@@ -370,3 +370,39 @@ def Model2():
     
     
     return tf.keras.Model(inputs=inputs, outputs=x)
+
+
+def cheatsheet(AE_models):
+    inputs = tf.keras.layers.Input(shape=[299,299,3], name='Image_Input')
+
+    a0 = tf.keras.Sequential(AE_models[0], name='AE_model0')
+    a1 = tf.keras.Sequential(AE_models[1], name='AE_model1')
+    a2 = tf.keras.Sequential(AE_models[2], name='AE_model2')
+    a3 = tf.keras.Sequential(AE_models[3], name='AE_model3')
+    a4 = tf.keras.Sequential(AE_models[4], name='AE_model4')
+    a5 = tf.keras.Sequential(AE_models[5], name='AE_model5')
+    a6 = tf.keras.Sequential(AE_models[6], name='AE_model6')
+    a7 = tf.keras.Sequential(AE_models[7], name='AE_model7')
+    a8 = tf.keras.Sequential(AE_models[8], name='AE_model8')
+    a9 = tf.keras.Sequential(AE_models[9], name='AE_model9')
+    a10 = tf.keras.Sequential(AE_models[10], name='AE_model10')
+    a11 = tf.keras.Sequential(AE_models[11], name='AE_model11')
+    a12 = tf.keras.Sequential(AE_models[12], name='AE_model12')
+    a13 = tf.keras.Sequential(AE_models[13], name='AE_model13')
+
+    x0 =tf.math.subtract(inputs,a0(inputs), name='AE0_Error')
+    x1 =tf.math.subtract(inputs,a1(inputs), name='AE1_Error')
+    x2 =tf.math.subtract(inputs,a2(inputs), name='AE2_Error')
+    x3 =tf.math.subtract(inputs,a3(inputs), name='AE3_Error')
+    x4 =tf.math.subtract(inputs,a4(inputs), name='AE4_Error')
+    x5 =tf.math.subtract(inputs,a5(inputs), name='AE5_Error')
+    x6 =tf.math.subtract(inputs,a6(inputs), name='AE6_Error')
+    x7 =tf.math.subtract(inputs,a7(inputs), name='AE7_Error')
+    x8 =tf.math.subtract(inputs,a8(inputs), name='AE8_Error')
+    x9 =tf.math.subtract(inputs,a9(inputs), name='AE9_Error')
+    x10 =tf.math.subtract(inputs,a10(inputs), name='AE10_Error')
+    x11 =tf.math.subtract(inputs,a11(inputs), name='AE11_Error')
+    x12 =tf.math.subtract(inputs,a12(inputs), name='AE12_Error')
+    x13 =tf.math.subtract(inputs,a13(inputs), name='AE013_Error')
+    cheat_sheet = tf.keras.layers.Concatenate(name='cheatsheet')([x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13])
+    return tf.keras.Model(inputs=inputs, outputs=cheat_sheet, name='cheatsheet_generator')
