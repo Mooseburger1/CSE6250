@@ -85,11 +85,11 @@ def fit(model, optimizer, epochs, train, test):
 
 '''Section for CLI arguments and descriptions'''
 parser = argparse.ArgumentParser()
-parser.add_argument('-i', '--input_directory', dest='input_', help="Directory location of training images", default='.')
-parser.add_argument('-o', '--output_directory', dest='output', help="Directory to save all data", default='.')
+parser.add_argument('-i', '--input_directory', dest='input_', help="Directory location of training images")
+parser.add_argument('-o', '--output_directory', dest='output', help="Directory to save all data")
 parser.add_argument('-c', '--class', dest='cls', help='class')
 parser.add_argument('-e', '--epochs', dest='epochs', help='Number of training epochs', default=100)
-parser.add_argument('-t', '--tensorboard', dest='tensorboard', help='Output directory for tensorboard logs', default='logs/gradient_tape/')
+parser.add_argument('-t', '--tensorboard', dest='tensorboard', help='Output directory for tensorboard logs')
 parser.add_argument('-b', '--batch', dest='batches', help='Batch Size for training data', default=64)
 parser.add_argument('-cl', '--clean_logs', dest='clean_logs', help='Delete old logs in tensorboard log directory', default='False')
 parser.add_argument('-cc', '--clean_checkpoints', dest='clean_checkpoints', help='Delete old model checkpoints in checkpoint directory', default='False')
