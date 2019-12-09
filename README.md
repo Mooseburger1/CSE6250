@@ -3,6 +3,50 @@
 ## Chest X-ray Disease Diagnosis
 ----------------------------------
 
+### Requirements
+* Python 3.7
+* Tensorflow 2.0
+* CPU processing supported - GPU Recommended
+
+### Cannoncial Directory structures
+All modules require a cannoncial directory structre of:
+* A parent directory
+* Sub directories where directory names are the classes
+* data corresponding to the upper level subdirectory
+
+```
+data
+|--train_data
+|       |--Cardiomegaly
+|       |       |--img1.jpg
+|       |       |--img2.jpg
+|       |       |--img3.jpg
+|       |--Enlarged_Cardiomediastinum
+|       |       |--img1.jpg
+|       |       |--img2.jpg
+|       |       |--img3.jpg
+|       |--Lung_Lesion
+|       |       |--img1.jpg
+|       |       |--img2.jpg
+|       |       |--img3.jpg
+|--valid_data
+|       |--Cardiomegaly
+|       |       |--img1.jpg
+|       |       |--img2.jpg
+|       |       |--img3.jpg
+|       |--Enlarged_Cardiomediastinum
+|       |       |--img1.jpg
+|       |       |--img2.jpg
+|       |       |--img3.jpg
+|       |--Lung_Lesion
+|       |       |--img1.jpg
+|       |       |--img2.jpg
+|       |       |--img3.jpg
+
+
+...........................
+```
+
 <img src='https://www.ebmconsult.com/content/images/Xrays/ChestXrayAPNmlLabeled.png'  >
 
 * Mentor1: Rishabh Bhardwaj hrbhardwaj39@gatech.edui
