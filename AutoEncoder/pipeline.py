@@ -66,9 +66,6 @@ def prepare_for_training(ds, BATCH_SIZE, cache=True, shuffle_buffer_size=1000):
 
 
 
-def resize_(img, lab):
-    img = tf.image.resize(img, [299,299])
-    return img, lab
 
 def parse_fn(example):
   "Parse TFExample records and perform simple data augmentation."

@@ -166,17 +166,17 @@ if (clean_ckpts.lower() == 'true') | (force == 'true') :
 #input pipeline
 train_path = os.path.join(args.input_, "train")
 train_path = os.path.join(train_path, args.cls)
-train_dataset = make_dataset(train_path)
+train_dataset = make_dataset(train_path, batches)
 
 try:
     valid_path = os.path.join(args.input_, "valid")
     valid_path = os.path.join(valid_path, args.cls)
-    valid_dataset = make_dataset(valid_path)
+    valid_dataset = make_dataset(valid_path, batches)
 except:
     print('WARNING: NO VALID DATASET FOUND - USING A SUBSET OF TRAIN SET AS VALID SET')
     valid_path = os.path.join(args.input_, "train")
     valid_path = os.path.join(valid_path, args.cls)
-    valid_dataset = make_dataset(valid_path)
+    valid_dataset = make_dataset(valid_path, batches)
     valid_dataset = valid_dataset.take(2)
 
 
