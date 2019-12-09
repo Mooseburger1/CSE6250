@@ -82,7 +82,7 @@ to get bonus points according to your performance.
 
 # Responsibilites
 ### Dane
-<img src="https://media.licdn.com/dms/image/C4E03AQGavECXV6qb_Q/profile-displayphoto-shrink_200_200/0?e=1575504000&v=beta&t=_fXnnO_2zLz6ZML28JLDhDom5-Zm0Lt9zGDvP22OoRI">
+<img src="https://media.licdn.com/dms/image/C4E03AQEIr99v4-G6lg/profile-displayphoto-shrink_200_200/0?e=1581552000&v=beta&t=mfTLIngW4ZUMU9b9f5VRjfStnT0JedxPvtpg_4AsXo0">
 
 * Generate initial statistics over the raw data to make sure the data quality is good enough and the key assumption about the data are met
 * Identify the high-level technical approaches for the project (e.g., what algorithms to use or pipelines to use).
@@ -97,7 +97,7 @@ to get bonus points according to your performance.
 ------------
 
 ### Scott
-<img src="https://media.licdn.com/dms/image/C5103AQF9GDUxajWA0Q/profile-displayphoto-shrink_200_200/0?e=1575504000&v=beta&t=sCbKxUCYP7WlZ0GT_2m9BjcRqVT-gPvoCnR9j3sdYeY">
+<img src="https://media.licdn.com/dms/image/C5103AQF9GDUxajWA0Q/profile-displayphoto-shrink_200_200/0?e=1581552000&v=beta&t=-aXEqS_1I-eXXTxfHR0V1G0W3BM5YIT7twk80fXHYos">
 
 * Identify and motivate the problems that you want to address in your project.
 * Formulate the data science problem in details (e.g., classification vs. predictive modeling vs. clustering problem). 
