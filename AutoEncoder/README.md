@@ -54,7 +54,7 @@ data
 ```
 ### Output Directory Structure
 
-While training, the program will save checkpoints of the tensorflow model as well as logs for Tensorboard. After completing the final Epoch, the program will save the entire model as a h5 file
+While training, the program will save checkpoints of the tensorflow model as well as logs for Tensorboard. After completing the final Epoch, the program will save the entire model as a h5 file. You must preconstruct this output directory structure. Its path will be used as input as a command line parameter.
 ```
 ex.
 
